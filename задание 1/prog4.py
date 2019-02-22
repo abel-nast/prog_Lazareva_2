@@ -6,14 +6,7 @@ from random import randint
 FPS = 60    # частота кадров
 SCREEN_WIDTH = 600    # ширина окна
 SCREEN_HEIGHT = 400   # высота окна
-ballRadius = 111    # радиус мячика
-
-# инициация, создание объектов и тд
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))    # создали окно
-bgColor = 255, 255, 255    # задали цвет фона
-clock = pygame.time.Clock()
-pygame.display.set_caption("Задание 1")    # дали название окну
+BALLRADIUS = 111    # радиус мячика
 
 
 # создаем класс мячиков
@@ -27,7 +20,7 @@ class Balls(pygame.sprite.Sprite):
 
     def ball_motion(self):
         # описываем движение вдоль оси Х
-        if self.rect.x + self.speedX >= SCREEN_WIDTH - ballRadius:
+        if self.rect.x + self.speedX >= SCREEN_WIDTH - BALLRADIUS:
             self.speedX = -self.speedX
         elif self.rect.x + self.speedX <= 0:
             self.speedX = -self.speedX
@@ -35,7 +28,7 @@ class Balls(pygame.sprite.Sprite):
             self.rect.x += self.speedX
 
         # описываем движение вдоль оси Y
-        if self.rect.y + self.speedY >= SCREEN_HEIGHT - ballRadius:
+        if self.rect.y + self.speedY >= SCREEN_HEIGHT - BALLRADIUS:
             self.speedY = -self.speedY
         elif self.rect.y + self.speedY <= 0:
             self.speedY = -self.speedY
@@ -43,34 +36,42 @@ class Balls(pygame.sprite.Sprite):
             self.rect.y += self.speedY
 
 
-# создаем объекты принадлежащие классу
-ball1 = Balls(randint(ballRadius, SCREEN_WIDTH - ballRadius), randint(ballRadius, SCREEN_HEIGHT - ballRadius))
-ball2 = Balls(randint(ballRadius, SCREEN_WIDTH - ballRadius), randint(ballRadius, SCREEN_HEIGHT - ballRadius))
-ball3 = Balls(randint(ballRadius, SCREEN_WIDTH - ballRadius), randint(ballRadius, SCREEN_HEIGHT - ballRadius))
+if __name__ == "__main__":
 
+    # инициация, создание объектов и тд
+    numberOfBalls = 6  # количество мячиков
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # создали окно
+    bgColor = 255, 255, 255  # задали цвет фона
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("Задание 1")  # дали название окну
+    ball_list = []  # для хранения мячиков
 
-# главный цикл
-while 1:
+    # создаем объекты принадлежащие классу
+    for i in range(numberOfBalls):
+        ball = Balls(randint(BALLRADIUS, SCREEN_WIDTH - BALLRADIUS), randint(BALLRADIUS, SCREEN_HEIGHT - BALLRADIUS))
+        ball_list.append(ball)
 
-    # цикл обработки событий
-    for i in pygame.event.get():
-        if i.type == pygame.QUIT:
-            exit()
+    # главный цикл
+    while 1:
 
-    # закрашивание фона
-    screen.fill(bgColor)
+        # цикл обработки событий
+        for i in pygame.event.get():
+            if i.type == pygame.QUIT:
+                exit()
 
-    # рисуем мячики
-    screen.blit(ball1.image, ball1.rect)
-    screen.blit(ball2.image, ball2.rect)
-    screen.blit(ball3.image, ball3.rect)
+        # закрашивание фона
+        screen.fill(bgColor)
 
-    pygame.display.update()  # обновление экрана
+        # рисуем мячики
+        for ball in ball_list:
+            screen.blit(ball.image, ball.rect)
 
-    # задержка
-    clock.tick(FPS)
+        pygame.display.update()  # обновление экрана
 
-    # объекты движутся
-    ball1.ball_motion()
-    ball2.ball_motion()
-    ball3.ball_motion()
+        # задержка
+        clock.tick(FPS)
+
+        # объекты движутся
+        for ball in ball_list:
+            ball.ball_motion()
